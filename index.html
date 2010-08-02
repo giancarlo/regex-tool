@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Regex Tool</title>
+	<link rel="stylesheet" type="text/css" href="default.css" />
+	<script type="text/javascript" src="regex.js"></script>
+</head>
+<body>
+	<h1>Regex Tool</h1>
+<div>
+	<div id="toolbar">
+		<span class="search">
+			<label>Search Library: <input id="searchbox" /></label>
+		</span>
+		<span class="options">
+			<label><input onchange="REGEX.update()" type="checkbox" id="op-global" checked="checked" />Global</label>
+			<label><input onchange="REGEX.update()" type="checkbox" id="op-case-sensitive" checked="checked" />Case Sensitive</label>
+			<label><input onchange="REGEX.update()" type="checkbox" id="op-multiline" checked="checked" />Multiline</label>
+		</span>
+	</div>
+	<label>Regex:<textarea rows="3" id="regex" cols="80">(https?://)?(www\.)?([a-zA-Z0-9_%]*)\b(\.[a-z]{2,4}(\.[a-z]{2})?)((/[a-zA-Z0-9_%]*)+)?(\.[a-z]*)?</textarea></label>
+	<label>Replace/Format String (Use $n to access n group)<textarea rows="3" id='replace' cols="80"></textarea></label>
+
+<div class="column-80">
+	<label>Input:<textarea id="input"></textarea></label>
+	<label>Output:<textarea id="output" readonly="readonly"></textarea></label>
+</div>
+<div class="column-20">
+	<label style="margin-left:10px;">Matches (<span id="search-count">0</span>):</label><ul id="found"></ul>
+</div>
+<div class="clear">
+</div>
+	<div id="footer">
+	<p>
+		2009 - All Rights Reserved.
+	</p>
+	<p>
+		Works in Firefox, Chrome, IE8 and Safari.
+	</p>
+	</div>
+	<div id="spinner" style="display:none;"><img src="ajax-loader.gif" /></div>
+</div>
+</body>
+</html>
