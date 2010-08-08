@@ -55,7 +55,7 @@ window.REGEX = {
 		if (REGEX.timeout)
 			clearTimeout(REGEX.timeout);
 
-		REGEX.timeout = setTimeout(REGEX.update, 500);
+		REGEX.timeout = setTimeout(REGEX.update, 300);
 	},
 
 	/* METHODS */
@@ -80,7 +80,17 @@ window.REGEX = {
 		if (what === undefined)
 			what = this.getRegexValue(); 
 
-		return new RegExp(what, modifier);
+		try {
+			return new RegExp(what, modifier);
+		} catch(e)
+		{
+			this._error(e);
+		}
+	},
+
+	_error: function(e)
+	{
+		REGEX.found.innerHTML = '<li class="error">ERROR: ' + e + '</li>';
 	},
 
 	getInput: function()
@@ -97,43 +107,52 @@ window.REGEX = {
 		this.output.value = result;
 	},
 
+	setInfo: function(count, options)
+	{
+		REGEX.count.innerHTML = count;
+		REGEX.found.innerHTML = options;
+	},
+
+	generateInfo: function(r)
+	{
+		var result = "";
+		var options = '';
+		var count = 0;
+
+		if (r)
+			do {
+				count++;
+				var option = '<li onclick="REGEX.select.apply(this)" value="' + r.index + '" len="' + r[0].length + '">';
+				var label  = r[0] + " @ " + r.index;
+				
+				if (r.length > 2)
+				{
+					label = '<img title="Click to see groups" onclick="return REGEX.opengroup.apply(this);" src="tree_close.gif" />' + label;
+					
+					var sm = '';
+					for (var i = 1; i < r.length; i++)
+						sm += '<li>' + r[i] + '</li>';
+					label += '<ol>' + sm + '</ol>';
+				}
+
+				options += option + label +  "</li>";
+			} while (s.global && (r = s.exec(input)));
+
+		this.setInfo(count, options);
+	},
+
 	search: function() 
 	{
 		var input = this.getInput();
 		if (input.length == 0) return;
 
-		var s = this.getRegex(),
-		    r = s.exec(input)
-		;
+		var s = this.getRegex();
 
-		if (!r) return;
+		if (s === undefined) return;
 
-		var result = "";
-		var options = '';
-		var count = 0;
+		var r = s.exec(input);
 
-		do {
-			count++;
-			var option = '<li onclick="REGEX.select.apply(this)" value="' + r.index + '" len="' + r[0].length + '">';
-			var label  = r[0] + " @ " + r.index;
-			
-			if (r.length > 2)
-			{
-				label = '<img title="Click to see groups" onclick="return REGEX.opengroup.apply(this);" src="tree_close.gif" />' + label;
-				
-				var sm = '';
-				for (var i = 1; i < r.length; i++)
-					sm += '<li>' + r[i] + '</li>';
-				label += '<ol>' + sm + '</ol>';
-			}
-
-			options += option + label +  "</li>";
-		} while (s.global && (r = s.exec(input)));
-
-		REGEX.count.innerHTML = count;
-		REGEX.found.innerHTML = options;
-
-		//REGEX.found.append(options);
+		this.generateInfo(r);
 	},
 
 	update: function()

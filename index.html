@@ -19,14 +19,16 @@
 	<label>Regex:<textarea rows="3" id="regex" cols="80">(https?://)?(www\.)?([a-zA-Z0-9_%]*)\b(\.[a-z]{2,4}(\.[a-z]{2})?)((/[a-zA-Z0-9_%]*)+)?(\.[a-z]*)?</textarea></label>
 	<label>Replace/Format String (Use $n to access n group)<textarea rows="3" id='replace' cols="80"></textarea></label>
 
-<div class="column-80">
-	<label>Input:<textarea id="input"></textarea></label>
-	<label>Output:<textarea id="output" readonly="readonly"></textarea></label>
-</div>
-<div class="column-20">
-	<label style="margin-left:10px;">Matches (<span id="search-count">0</span>):</label><ul id="found"></ul>
-</div>
-<div class="clear">
+	<div>
+		<div class="column-80">
+			<label>Input:<textarea id="input"></textarea></label>
+			<label>Output:<textarea id="output" readonly="readonly"></textarea></label>
+		</div>
+		<div class="column-20">
+			<label style="margin-left:10px;">Matches (<span id="search-count">0</span>):</label><ul id="found"></ul>
+		</div>
+		<div class="clear">
+	</div>
 </div>
 	<div id="footer">
 	<p>
