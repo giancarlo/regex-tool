@@ -11,6 +11,8 @@ window.REGEX = {
 	output: null,
 	info: null,
 
+	last_regex : '',
+
 	option: {
 		multiline: null,
 		case_sensitive: null,
@@ -28,6 +30,11 @@ window.REGEX = {
 		this.regex.onchange = REGEX.update;
 		this.regexreplace.onchange = REGEX.update;
 		this.input.onchange = REGEX.update;
+
+		this.regex.onfocus = REGEX.onHelp;
+		this.regexreplace.onfocus = REGEX.onHelp;
+		this.regex.onblur  = REGEX.hideHelp;
+		this.regexreplace.onblur = REGEX.hideHelp;
 	},
 
 	init: function()
@@ -39,10 +46,12 @@ window.REGEX = {
 		this.info = this.gebi('info');
 		this.count = this.gebi('search-count');
 		this.found = this.gebi('found');
+		this.helpdiv = this.gebi('help');
 
 		this.option.multiline = this.gebi('op-multiline');
 		this.option.case_sensitive= this.gebi('op-case-sensitive');
 		this.option.global = this.gebi('op-global');
+		this.option.help = this.gebi('op-help');
 
 		this.initEvents();
 		this.update();
@@ -50,12 +59,21 @@ window.REGEX = {
 
 	/* EVENTS */
 
+	onHelp: function()
+	{
+		//REGEX.helpdiv.top = this.
+		REGEX.helpdiv.style.top = this.offsetTop+this.offsetHeight + "px";
+		REGEX.helpdiv.style.left = this.offsetLeft+"px";
+
+		REGEX.helpdiv.style.display = REGEX.option.help.checked ? "block" : "none";
+	},
+
 	onKeyUp: function()
 	{
 		if (REGEX.timeout)
 			clearTimeout(REGEX.timeout);
 
-		REGEX.timeout = setTimeout(REGEX.update, 300);
+		REGEX.timeout = setTimeout(REGEX.update, 250);
 	},
 
 	/* METHODS */
@@ -113,32 +131,36 @@ window.REGEX = {
 		REGEX.found.innerHTML = options;
 	},
 
-	generateInfo: function(r)
+	generateInfo: function(r, s, input)
 	{
 		var result = "";
 		var options = '';
 		var count = 0;
 
-		if (r)
-			do {
-				count++;
-				var option = '<li onclick="REGEX.select.apply(this)" value="' + r.index + '" len="' + r[0].length + '">';
-				var label  = r[0] + " @ " + r.index;
+		do {
+			count++;
+			var option = '<li onclick="REGEX.select.apply(this)" value="' + r.index + '" len="' + r[0].length + '">';
+			var label  = r[0] + " @ " + r.index;
+			
+			if (r.length > 2)
+			{
+				label = '<img title="Click to see groups" onclick="return REGEX.opengroup.apply(this);" src="tree_close.gif" />' + label;
 				
-				if (r.length > 2)
-				{
-					label = '<img title="Click to see groups" onclick="return REGEX.opengroup.apply(this);" src="tree_close.gif" />' + label;
-					
-					var sm = '';
-					for (var i = 1; i < r.length; i++)
-						sm += '<li>' + r[i] + '</li>';
-					label += '<ol>' + sm + '</ol>';
-				}
+				var sm = '';
+				for (var i = 1; i < r.length; i++)
+					sm += '<li>' + r[i] + '</li>';
+				label += '<ol>' + sm + '</ol>';
+			}
 
-				options += option + label +  "</li>";
-			} while (s.global && (r = s.exec(input)));
+			options += option + label +  "</li>";
+		} while (s.global && (r = s.exec(input)));
 
 		this.setInfo(count, options);
+	},
+
+	clearTimeout: function()
+	{
+		clearTimeout(REGEX.timeout);
 	},
 
 	search: function() 
@@ -152,17 +174,45 @@ window.REGEX = {
 
 		var r = s.exec(input);
 
-		this.generateInfo(r);
+		if (r)	this.generateInfo(r, s, input);
+	},
+
+	// TODO This is needed so the list doesnt get updated for no reason.
+	changed: function()
+	{
+		return (REGEX.regex.value !== REGEX.regex.last_value) ||
+		       (REGEX.input.value !== REGEX.input.last_value);
+	},
+
+	changedReplace: function()
+	{
+	       return (REGEX.regexreplace.value !== REGEX.regexreplace.last_value);
+	},
+
+	saveValues: function()
+	{
+		REGEX.regex.last_value = REGEX.regex.value;
+		REGEX.regexreplace.last_value = REGEX.regexreplace.value;
+		REGEX.input.last_value = REGEX.input.value;
+	},
+
+	hideHelp: function()
+	{
+		REGEX.helpdiv.style.display = 'none';
 	},
 
 	update: function()
 	{
 		if (REGEX.timeout)
-			clearTimeout(REGEX.timeout);
+			REGEX.clearTimeout();
 
-		REGEX.search();
+		if (REGEX.changed())
+		{
+			REGEX.saveValues();
+			REGEX.search();
+		}
 
-		if (REGEX.regexreplace.value)
+		if (REGEX.regexreplace.value && REGEX.changedReplace())
 			REGEX.replace();
 	},
 

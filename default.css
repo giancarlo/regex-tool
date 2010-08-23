@@ -3,11 +3,16 @@
 .ui-tabs-hide { display: none; }
 #footer { margin-top: 10px; text-align: center; }
 
-body { background-color: #eee; font-size:  65%; font-family: Verdana, Arial, sans-serif; }
-textarea {  width: 100%; margin-bottom: 6px; border: 1px solid #999; padding: 0}
-label { height: 20px; line-height: 20px; padding: 0; margin: 0; }
+body { min-width: 800px; background-color: #eee; font-size: 12px; font-family: Verdana, Arial, sans-serif; }
+textarea {  width: 100%; margin-bottom: 6px; border: 1px solid #666; padding: 0}
+label { height: 20px; line-height: 20px; padding: 0; margin: 0; font-weight: bold; }
+table { max-width: 780px;  }
+tbody > tr:nth-child(odd) { background-color: #eee;  };
+td { margin: 2px 5px;padding: 0; border: 0;  }
 
-#found { border: 1px solid #999; height: 434px; margin: 0 0 10px 10px; padding: 0; overflow: auto; background-color: white; }
+#help { display: none; position: absolute; border: 1px solid #666; background-color: white; padding: 5px;}
+
+#found { border: 1px solid #666; height: 434px; margin: 0 0 10px 10px; padding: 0; overflow: auto; background-color: white; }
 #found li { cursor: pointer; }
 #found > li { padding: 2px; list-style: none; line-height: 20px; }
 #found > li:hover { background-color: #ccc; }
