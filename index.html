@@ -11,14 +11,17 @@
 <div>
 	<div id="toolbar">
 		<span class="options">
-			<label><input onchange="REGEX.update()" type="checkbox" id="op-global" checked="checked" />Global</label>
-			<label><input onchange="REGEX.update()" type="checkbox" id="op-case-sensitive" checked="checked" />Case Sensitive</label>
-			<label><input onchange="REGEX.update()" type="checkbox" id="op-multiline" checked="checked" />Multiline</label>
-			<label><input onchange="REGEX.help.apply(this)" type="checkbox" id="op-help"  />Show Help</label>
+			<label><input onchange="REGEX.update(1)" type="checkbox" id="op-global" checked="checked" />Global</label>
+			<label><input onchange="REGEX.update(1)" type="checkbox" id="op-case-sensitive" checked="checked" />Case Sensitive</label>
+			<label><input onchange="REGEX.update(1)" type="checkbox" id="op-multiline" checked="checked" />Multiline</label>
+			<label><input type="checkbox" id="op-help"  />Show Reference</label>
 		</span>
 	</div>
 	<label>Regex:<textarea rows="3" id="regex" cols="80">(https?://)?(www\.)?([a-zA-Z0-9_%]*)\b(\.[a-z]{2,4}(\.[a-z]{2})?)((/[a-zA-Z0-9_%]*)+)?(\.[a-z]*)?</textarea></label>
 	<label>Replace/Format String (Use $n to access n group)<textarea rows="3" id='replace' cols="80"></textarea></label>
+	<div id="saved">
+		<button type="button" onclick="REGEX.save()">Save</button>
+	</div>
 
 	<div>
 		<div class="column-80">
@@ -28,34 +31,36 @@
 		<div class="column-20">
 			<label style="margin-left:10px;">Matches (<span id="search-count">0</span>):</label><ul id="found"></ul>
 		</div>
-		<div class="clear">
+		<div class="clear"></div>
 	</div>
 
 	<div id="help">
 		<table>
 			<thead><tr><th>Expression</th><th>Matches</th><th></th><th>Expression</th><th>Matches</th></tr></thead>
-			<tr><td>\xFF</td><td>Character 0xFF</td><td>&nbsp;</td>
-			    <td>\n \r \t</td><td>LF, CR and TAB respectively</td></tr>
-			<tr><td>\a \e \f \v</td><td>BELL, ESC, FEED, Vertical TAB respectively</td><td>&nbsp;</td>
-			<td>\cA ... \cZ</td><td>ASCII Control+A ... Control+Z</td></tr>
-			<tr><td>[abz]</td><td>a, b or c</td><td>&nbsp;</td>
-			<td>[\^\]\\\-]</td><td>^, \, - or ]</td></tr>
-			<tr><td>[a-zA-Z0-9]</td><td>Any letter or digit</td><td>&nbsp;</td>
-			<td>[^a-d]</td><td>Any character except a, b, c or d</td></tr>
-			<tr><td>\d, \w and \s</td><td>Digits, Words and whitespace</td><td>&nbsp;</td>
-			<td>\D, \W and \S</td><td>Negated versions of the above.</td></tr>
-			<tr><td>[\b]</td><td>Backspace character</td><td>&nbsp;</td>
-			<td>. (dot)</td><td>Any single character except line break</td></tr>
-			<tr><td>^ (caret)</td><td>Start of the string</td><td>&nbsp;</td>
-			<td>$ (dollar)</td><td>End of the string</td></tr>
-			<tr><td>abc|def|xyz</td><td>abc, def or xyz</td><td>&nbsp;</td>
-			<td>abc(def|xyz)</td><td>abcdef or abcxyz</td></tr>
-			<tr><td>abc?</td><td>ab or abc</td><td>&nbsp;</td>
-			<td>* (star)</td><td>Repeats zero or more times</td></tr>
-			<tr><td>+ (plus)</td><td>Repeats one or more</td><td>&nbsp;</td>
-			<td>a{3}b{4}</td><td>aaabbbb</td></tr>
-			<tr><td>a{2,4}</td><td>aa, aaa or aaaa</td><td>&nbsp;</td>
-			<td>a{2,}</td><td>Matches 2 or more "a"s</td></tr>
+			<tbody>
+				<tr><td>\xFF</td><td>Character 0xFF</td><td>&nbsp;</td>
+				    <td>\n \r \t</td><td>LF, CR and TAB respectively</td></tr>
+				<tr><td>\a \e \f \v</td><td>BELL, ESC, FEED, Vertical TAB respectively</td><td>&nbsp;</td>
+				<td>\cA ... \cZ</td><td>ASCII Control+A ... Control+Z</td></tr>
+				<tr><td>[abz]</td><td>a, b or c</td><td>&nbsp;</td>
+				<td>[\^\]\\\-]</td><td>^, \, - or ]</td></tr>
+				<tr><td>[a-zA-Z0-9]</td><td>Any letter or digit</td><td>&nbsp;</td>
+				<td>[^a-d]</td><td>Any character except a, b, c or d</td></tr>
+				<tr><td>\d, \w and \s</td><td>Digits, Words and whitespace</td><td>&nbsp;</td>
+				<td>\D, \W and \S</td><td>Negated versions of the above.</td></tr>
+				<tr><td>[\b]</td><td>Backspace character</td><td>&nbsp;</td>
+				<td>. (dot)</td><td>Any single character except line break</td></tr>
+				<tr><td>^ (caret)</td><td>Start of the string</td><td>&nbsp;</td>
+				<td>$ (dollar)</td><td>End of the string</td></tr>
+				<tr><td>abc|def|xyz</td><td>abc, def or xyz</td><td>&nbsp;</td>
+				<td>abc(def|xyz)</td><td>abcdef or abcxyz</td></tr>
+				<tr><td>abc?</td><td>ab or abc</td><td>&nbsp;</td>
+				<td>* (star)</td><td>Repeats zero or more times</td></tr>
+				<tr><td>+ (plus)</td><td>Repeats one or more</td><td>&nbsp;</td>
+				<td>a{3}b{4}</td><td>aaabbbb</td></tr>
+				<tr><td>a{2,4}</td><td>aa, aaa or aaaa</td><td>&nbsp;</td>
+				<td>a{2,}</td><td>Matches 2 or more "a"s</td></tr>
+			</tbody>
 		</table>
 	</div>
 </div>
@@ -67,7 +72,5 @@
 		Works in Firefox, Chrome, IE8 and Safari.
 	</p>
 	</div>
-	<div id="spinner" style="display:none;"><img src="ajax-loader.gif" /></div>
-</div>
 </body>
 </html>

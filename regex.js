@@ -1,301 +1,242 @@
 
-
 (function (window, document, undefined)
 {
 
-window.REGEX = {
-
-	regex: null,
-	regexreplace: null,
-	input: null,
-	output: null,
-	info: null,
-
-	last_regex : '',
-
-	option: {
-		multiline: null,
-		case_sensitive: null,
-		global: null
-	},
-
-	/* INIT */
-	
-	initEvents: function()
+var
+	REGEX = function()
 	{
-		this.regex.onkeyup = REGEX.onKeyUp;
-		this.regexreplace.onkeyup = REGEX.onKeyUp;
-		this.input.onkeyup = REGEX.onKeyUp;
-
-		this.regex.onchange = REGEX.update;
-		this.regexreplace.onchange = REGEX.update;
-		this.input.onchange = REGEX.update;
-
-		this.regex.onfocus = REGEX.onHelp;
-		this.regexreplace.onfocus = REGEX.onHelp;
-		this.regex.onblur  = REGEX.hideHelp;
-		this.regexreplace.onblur = REGEX.hideHelp;
-	},
-
-	init: function()
-	{
-		this.regex = this.gebi('regex');
-		this.regexreplace = this.gebi('replace');
-		this.input = this.gebi('input');
-		this.output = this.gebi('output');
-		this.info = this.gebi('info');
-		this.count = this.gebi('search-count');
-		this.found = this.gebi('found');
-		this.helpdiv = this.gebi('help');
-
-		this.option.multiline = this.gebi('op-multiline');
-		this.option.case_sensitive= this.gebi('op-case-sensitive');
-		this.option.global = this.gebi('op-global');
-		this.option.help = this.gebi('op-help');
-
-		this.initEvents();
-		this.update();
-	},
-
-	/* EVENTS */
-
-	onHelp: function()
-	{
-		//REGEX.helpdiv.top = this.
-		REGEX.helpdiv.style.top = this.offsetTop+this.offsetHeight + "px";
-		REGEX.helpdiv.style.left = this.offsetLeft+"px";
-
-		REGEX.helpdiv.style.display = REGEX.option.help.checked ? "block" : "none";
-	},
-
-	onKeyUp: function()
-	{
-		if (REGEX.timeout)
-			clearTimeout(REGEX.timeout);
-
-		REGEX.timeout = setTimeout(REGEX.update, 250);
-	},
-
-	/* METHODS */
-
-	getReplace: function()
-	{
-		return this.regexreplace.value;
-	},
-
-	getRegexValue: function()
-	{
-		return this.regex.value;
-	},
-
-	getRegex: function(what)
-	{
-		var modifier = (this.option.multiline.checked ? 'm' : '') +
-		               (this.option.case_sensitive.checked ? '': 'i') +
-			       (this.option.global ? 'g': '')
-		;
-
-		if (what === undefined)
-			what = this.getRegexValue(); 
-
-		try {
-			return new RegExp(what, modifier);
-		} catch(e)
+	var
+		gebi = function(el)
 		{
-			this._error(e);
-		}
-	},
+			return document.getElementById(el);
+		}, 
 
-	_error: function(e)
-	{
-		REGEX.found.innerHTML = '<li class="error">ERROR: ' + e + '</li>';
-	},
+		/* HTML ELEMENTS */
+		regex   = gebi('regex'),
+		replace = gebi('replace'),
+		input   = gebi('input'),
+		output  = gebi('output'),
+		count   = gebi('search-count'),
+		helpdiv = gebi('help'),
+		saved   = gebi('saved'),
+		option  = {
+			multiline: gebi('op-multiline'),
+			case_sensitive: gebi('op-case-sensitive'),
+			global: gebi('op-global'),
+			help: gebi('op-help')
+		},
 
-	getInput: function()
-	{
-		return this.input.value;
-	},
+		timeout = 250,
 
-	replace: function()
-	{
-		var regex = this.getRegex();
-		var replace = this.getReplace();
+		/* EVENT HANDLERS */
 
-		var result = this.getInput().replace(regex, replace);
-		this.output.value = result;
-	},
+		onHelp= function()
+		{
+			helpdiv.style.top     = this.offsetTop+this.offsetHeight + "px";
+			helpdiv.style.left    = this.offsetLeft+"px";
+			helpdiv.style.display = option.help.checked ? "block" : "none";
+		},
 
-	setInfo: function(count, options)
-	{
-		REGEX.count.innerHTML = count;
-		REGEX.found.innerHTML = options;
-	},
+		onKeyUp= function()
+		{
+			if (timeout)
+				clearTimeout(timeout);
 
-	generateInfo: function(r, s, input)
-	{
-		var result = "";
-		var options = '';
-		var count = 0;
+			timeout = setTimeout(update, 250);
+		},
+		
+		onSelect= function()
+		{
+			input.selectionStart = this.value;
+			input.selectionEnd   = parseInt(this.value) + parseInt(this.getAttribute("len"));
+		},
 
-		do {
-			count++;
-			var option = '<li onclick="REGEX.select.apply(this)" value="' + r.index + '" len="' + r[0].length + '">';
-			var label  = r[0] + " @ " + r.index;
+		onOpenGroup= function()
+		{
+			var ol = this.nextSibling.nextSibling;
 			
-			if (r.length > 2)
+			if (ol.style.display=='' || ol.style.display == 'none')
 			{
-				label = '<img title="Click to see groups" onclick="return REGEX.opengroup.apply(this);" src="tree_close.gif" />' + label;
-				
-				var sm = '';
-				for (var i = 1; i < r.length; i++)
-					sm += '<li>' + r[i] + '</li>';
-				label += '<ol>' + sm + '</ol>';
+				ol.style.display = 'block';
+				this.src = 'tree_open.gif';
+			} else
+			{
+				ol.style.display = 'none';
+				this.src = 'tree_close.gif';
 			}
 
-			options += option + label +  "</li>";
-		} while (s.global && (r = s.exec(input)));
+			return false;
+		},
 
-		this.setInfo(count, options);
-	},
-
-	clearTimeout: function()
-	{
-		clearTimeout(REGEX.timeout);
-	},
-
-	search: function() 
-	{
-		var input = this.getInput();
-		if (input.length == 0) return;
-
-		var s = this.getRegex();
-
-		if (s === undefined) return;
-
-		var r = s.exec(input);
-
-		if (r)	this.generateInfo(r, s, input);
-	},
-
-	// TODO This is needed so the list doesnt get updated for no reason.
-	changed: function()
-	{
-		return (REGEX.regex.value !== REGEX.regex.last_value) ||
-		       (REGEX.input.value !== REGEX.input.last_value);
-	},
-
-	changedReplace: function()
-	{
-	       return (REGEX.regexreplace.value !== REGEX.regexreplace.last_value);
-	},
-
-	saveValues: function()
-	{
-		REGEX.regex.last_value = REGEX.regex.value;
-		REGEX.regexreplace.last_value = REGEX.regexreplace.value;
-		REGEX.input.last_value = REGEX.input.value;
-	},
-
-	hideHelp: function()
-	{
-		REGEX.helpdiv.style.display = 'none';
-	},
-
-	update: function()
-	{
-		if (REGEX.timeout)
-			REGEX.clearTimeout();
-
-		if (REGEX.changed())
+		/* METHODS */
+		_error= function(e)
 		{
-			REGEX.saveValues();
-			REGEX.search();
+			REGEX.found.innerHTML = '<li class="error">ERROR: ' + e + '</li>';
+		},
+
+		getRegex= function()
+		{
+			var modifier = (option.multiline.checked ? 'm' : '') +
+				       (option.case_sensitive.checked ? '': 'i') +
+				       (option.global ? 'g': ''),
+					what = regex.value
+			;
+
+			if (what)
+			{
+				try {
+					return new RegExp(what, modifier);
+				} catch(e)
+				{
+					_error(e);
+				}
+			}
+		},
+
+		doReplace= function()
+		{
+			output.value = input.value.replace(getRegex(), replace.value);
+		},
+
+		setInfo= function(searchcount, options)
+		{
+			count.innerHTML = searchcount;
+			found.innerHTML = options;
+		},
+
+		generateInfo= function(r, s)
+		{
+			var options = '', count = 0, option, label, sm, i;
+
+			do {
+				count++;
+				option = '<li onclick="REGEX.onSelect.apply(this)" value="' + r.index + '" len="' + r[0].length + '">';
+				label  = r[0] + " @ " + r.index;
+				
+				if (r.length > 2)
+				{
+					label = '<img title="Click to see groups" onclick="return REGEX.onOpenGroup.apply(this);" src="tree_close.gif" />' + label;
+					
+					sm = '';
+					for (i = 1; i < r.length; i++)
+						sm += '<li>' + r[i] + '</li>';
+					label += '<ol>' + sm + '</ol>';
+				}
+
+				options += option + label +  "</li>";
+
+			} while (s.global && (r = s.exec(input.value)));
+
+			setInfo(count, options);
+		},
+
+		// TODO This is needed so the list doesnt get updated for no reason.
+		changed= function()
+		{
+			return (regex.value !== regex.last_value) ||
+			       (input.value !== input.last_value);
+		},
+
+		clearInfo= function()
+		{
+			found.innerHTML = '';
+		},
+
+		search= function() 
+		{
+			if (input.value.length > 0)
+			{
+				var s = getRegex(), r;
+
+				if (s)
+				{
+					r = s.exec(input.value);
+					if (r)	
+						return generateInfo(r, s);
+				}
+			}
+			clearInfo();
+		},
+
+		changedReplace= function()
+		{
+		       return (replace.value !== replace.last_value);
+		},
+
+		saveValues= function()
+		{
+			regex.last_value = regex.value;
+			input.last_value = input.value;
+		},
+
+		hideHelp= function()
+		{
+			helpdiv.style.display = 'none';
+		},
+
+		update= function(force)
+		{
+			clearTimeout(timeout);
+
+			if (changed())
+			{
+				saveValues();
+				search();
+			}
+
+			if (replace.value && changedReplace())
+			{
+				replace.last_value = replace.value;
+				doReplace();
+			}
+		},
+
+		save= function()
+		{
+			var s   = document.createElement("DIV"), 
+			    img = document.createElement("A"), 
+			    sp = document.createElement("SPAN")
+			;
+
+			sp.innerHTML = regex.value;
+			
+			sp.title = sp.innerHTML;
+			sp.replace = replace.value;
+
+			sp.onclick = function() { regex.value = this.innerHTML; replace.value = this.replace; update(); }
+			img.onclick = function() { this.parentNode.parentNode.removeChild(this.parentNode); return false; }
+
+			img.innerHTML = "X";
+
+			s.appendChild(sp);
+			s.appendChild(img);
+			
+			saved.appendChild(s);
 		}
-
-		if (REGEX.regexreplace.value && REGEX.changedReplace())
-			REGEX.replace();
-	},
-
-	gebi: function(id)
-	{
-		return document.getElementById(id);
-	},
-
-	select: function()
-	{
-		var input = REGEX.input;
-		input.selectionStart = this.value;
-		input.selectionEnd   = parseInt(this.value) + parseInt(this.getAttribute("len"));
-	},
-
-	opengroup: function()
-	{
-		var ol = this.nextSibling.nextSibling;
-		
-		if (ol.style.display=='' || ol.style.display == 'none')
-		{
-			ol.style.display = 'block';
-			this.src = 'tree_open.gif';
-		} else
-		{
-			ol.style.display = 'none';
-			this.src = 'tree_close.gif';
-		}
-
-		return false;
-	}
-
-};
-
-window.onload = function() { REGEX.init(); };
-
-})(this, this.document);
-
-var REGEXold = {
-
-	format: function()
-	{
-		REGEX.search();
-		REGEX._replace(REGEX.found.text());
-	},
-
-	highlight: function(r)
-	{
-		var t  = REGEX.input.val();
-		var t1 = t.substr(0, r.index);
-		var t2 = t.substr(r.index, r[0].length);
-		var t3 = t.substr(r.index + r[0].length, t.length);
-
-		t = t1 + '<span style="background-color: gray">' + t2 + '</span>' + t3;
-		REGEX.input.html(t);
-	},
-
-	showSpinner: function(d)
-	{
-		var w = d.innerWidth();
-		var h = d.innerHeight();
-		var off = d.offset();
-
-		REGEX.spinner
-			.css("left", off.left)
-			.css("top", off.top)
-			.width(d.width())
-			.height(d.height())
-			.fadeTo(0, 0.3)
 		;
 
-		var spi = $("img", REGEX.spinner);
-		spi.css("left", w/2 - spi.width() / 2)
-		   .css("top", h/2 - spi.height() / 2)
-		;
+		/* INITIALIZE EVENTS */
+		regex.onkeyup = onKeyUp;
+		replace.onkeyup = onKeyUp;
+		input.onkeyup = onKeyUp;
 
-		REGEX.spinner.show()
-	},
+		regex.onchange = update;
+		replace.onchange = update;
+		input.onchange = update;
 
-	hideSpinner: function()
-	{
-		REGEX.spinner.hide();
-	}
+		regex.onfocus = onHelp;
+		replace.onfocus = onHelp;
+		regex.onblur  = hideHelp;
+		replace.onblur = hideHelp;
 
+		this.onSelect = onSelect;
+		this.onOpenGroup = onOpenGroup;
+		this.update = update;
+		this.save = save;
+	};
 
-};
+	window.onload = function() { 
+		window.REGEX = new REGEX(); 
+	};
+
+})(this, document);
