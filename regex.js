@@ -19,6 +19,7 @@ var
 		count   = gebi('search-count'),
 		helpdiv = gebi('help'),
 		saved   = gebi('saved'),
+		error_search = gebi('error-search'),
 		option  = {
 			multiline: gebi('op-multiline'),
 			case_sensitive: gebi('op-case-sensitive'),
@@ -69,11 +70,6 @@ var
 		},
 
 		/* METHODS */
-		_error= function(e)
-		{
-			REGEX.found.innerHTML = '<li class="error">ERROR: ' + e + '</li>';
-		},
-
 		getRegex= function()
 		{
 			var modifier = (option.multiline.checked ? 'm' : '') +
@@ -88,7 +84,7 @@ var
 					return new RegExp(what, modifier);
 				} catch(e)
 				{
-					_error(e);
+					error_search.innerHTML = e;
 				}
 			}
 		},
@@ -140,10 +136,14 @@ var
 		clearInfo= function()
 		{
 			found.innerHTML = '';
+			error_search.innerHTML = '';
+			count.innerHTML = 0;
 		},
 
 		search= function() 
 		{
+			clearInfo();
+
 			if (input.value.length > 0)
 			{
 				var s = getRegex(), r;
@@ -152,10 +152,9 @@ var
 				{
 					r = s.exec(input.value);
 					if (r)	
-						return generateInfo(r, s);
+						generateInfo(r, s);
 				}
-			}
-			clearInfo();
+			} 
 		},
 
 		changedReplace= function()

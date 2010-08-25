@@ -36,7 +36,8 @@ button { border: 1px solid #666; min-height: 20px; }
 #found > li:hover { background-color: #ccc; }
 #found img { float: left;}
 #found > li  ol { background-color: white; display: none; }
-#found li.error { font-weight: bold; color: red; }
+
+.error { margin-bottom: 4px; font-weight: bold; color: red; }
 
 #output { height: 200px; }
 #input { height: 200px; }
