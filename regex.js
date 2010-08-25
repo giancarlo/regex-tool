@@ -19,6 +19,7 @@ var
 		count   = gebi('search-count'),
 		helpdiv = gebi('help'),
 		saved   = gebi('saved'),
+		found   = gebi('found'),
 		error_search = gebi('error-search'),
 		option  = {
 			multiline: gebi('op-multiline'),
