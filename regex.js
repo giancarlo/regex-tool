@@ -3,13 +3,14 @@
 {
 
 var
+	gebi = function(el)
+	{
+		return document.getElementById(el);
+	}, 
+
 	REGEX = function()
 	{
 	var
-		gebi = function(el)
-		{
-			return document.getElementById(el);
-		}, 
 
 		/* HTML ELEMENTS */
 		regex   = gebi('regex'),
