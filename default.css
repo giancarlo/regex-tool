@@ -28,6 +28,7 @@ label {
 	position: absolute;
 	padding: 0 5px 5px 5px;
 	left: 0; right: 0;
+	-moz-box-sizing: border-box;
 	box-sizing: border-box;
 }
 
@@ -56,11 +57,13 @@ label {
 
 #content > div > textarea {
 	padding-top: 24px; background-color: rgba(255, 255, 255, 0.5);
+	-moz-box-sizing: border-box;
 	border: 1px solid #ccc; box-sizing: border-box;
 }
 
 #saved {
 	border: none; background-color: #1ABC9C; line-height: 30px;
+	-moz-box-sizing: border-box;
 	box-sizing: border-box; height: 40px; padding: 5px;
 }
 
@@ -70,6 +73,7 @@ label {
 
 #output-bar {
 	position: absolute !important; bottom: 0; top: 30%;
+	-moz-box-sizing: border-box;
 	padding: 10px; box-sizing: border-box;
 }
 
@@ -99,6 +103,7 @@ button { border: 1px solid #666; min-height: 20px; }
 #found {
 	border: 1px solid #ccc; padding: 24px 0 0 0; overflow: auto;
 	background-color: white; margin: 0; height: 100%;
+	-moz-box-sizing: border-box;
 	box-sizing: border-box;
 }
 #found li { cursor: pointer; }
