@@ -7,34 +7,40 @@
 	<script type="text/javascript" src="regex.js"></script>
 </head>
 <body>
-	<h1>Regex Tool</h1>
-<div>
-	<div id="toolbar">
-		<span class="options">
+	<header>
+		<h1>Regex Tool</h1>
+		<div id="toolbar">
 			<label><input onchange="REGEX.update(1)" type="checkbox" id="op-global" checked="checked" />Global</label>
 			<label><input onchange="REGEX.update(1)" type="checkbox" id="op-case-sensitive" checked="checked" />Case Sensitive</label>
 			<label><input onchange="REGEX.update(1)" type="checkbox" id="op-multiline" checked="checked" />Multiline</label>
 			<label><input type="checkbox" id="op-help"  />Show Reference</label>
-		</span>
-	</div>
-	<label>Regex:<textarea rows="3" id="regex" cols="80">(https?://)?(www\.)?([a-zA-Z0-9_%]*)\b(\.[a-z]{2,4}(\.[a-z]{2})?)((/[a-zA-Z0-9_%]*)+)?(\.[a-z]*)?</textarea></label>
+		</div>
 	<div id="error-search" class="error"></div>
-	<label>Replace/Format String (Use $n to access n group)<textarea rows="3" id='replace' cols="80"></textarea></label>
+	</header>
+	
 	<div id="saved">
 		<button type="button" onclick="REGEX.save()">Save</button>
 	</div>
+<div id="content">
 
-	<div>
-		<div class="column-80">
-			<label>Input:<textarea id="input"></textarea></label>
-			<label>Output:<textarea id="output" readonly="readonly"></textarea></label>
-		</div>
-		<div class="column-20">
-			<label style="margin-left:10px;">Matches (<span id="search-count">0</span>):</label><ul id="found"></ul>
-		</div>
-		<div class="clear"></div>
+	<div id="regex-container">
+		<label>Regex</label><textarea rows="3" id="regex" cols="80">(https?://)?(www\.)?([a-zA-Z0-9_%]*)\b(\.[a-z]{2,4}(\.[a-z]{2})?)((/[a-zA-Z0-9_%]*)+)?(\.[a-z]*)?</textarea>
 	</div>
-
+	<div id="replace-container">
+		<label>Replace</label>
+		<textarea rows="3" id='replace' cols="80"></textarea>
+	</div>
+	<div id="input-container">
+		<label>Input</label><textarea id="input"></textarea>
+	</div>
+	<div id="output-container">
+		<label>Output</label><textarea id="output" readonly="readonly"></textarea>
+	</div>
+	<div id="matches-container">
+		<label>Matches(<span id="search-count">0</span>):</label>
+		<ul id="found"></ul>
+	</div>
+</div>
 	<div id="help">
 		<table>
 			<thead><tr><th>Expression</th><th>Matches</th><th></th><th>Expression</th><th>Matches</th></tr></thead>
@@ -64,14 +70,6 @@
 			</tbody>
 		</table>
 	</div>
-</div>
-	<div id="footer">
-	<p>
-		2009 - All Rights Reserved.
-	</p>
-	<p>
-		Works in Firefox, Chrome, IE8 and Safari.
-	</p>
-	</div>
+
 </body>
 </html>

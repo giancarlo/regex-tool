@@ -1,17 +1,17 @@
 
 (function (window, document, undefined)
 {
+"use strict";
 
 var
 	gebi = function(el)
 	{
 		return document.getElementById(el);
-	}, 
+	},
 
 	REGEX = function()
 	{
 	var
-
 		/* HTML ELEMENTS */
 		regex   = gebi('regex'),
 		replace = gebi('replace'),
@@ -22,6 +22,7 @@ var
 		saved   = gebi('saved'),
 		found   = gebi('found'),
 		error_search = gebi('error-search'),
+
 		option  = {
 			multiline: gebi('op-multiline'),
 			case_sensitive: gebi('op-case-sensitive'),
@@ -35,8 +36,11 @@ var
 
 		onHelp= function()
 		{
-			helpdiv.style.top     = this.offsetTop+this.offsetHeight + "px";
-			helpdiv.style.left    = this.offsetLeft+"px";
+		var
+			rect = this.getBoundingClientRect()
+		;
+			helpdiv.style.top     = rect.top + rect.height + 'px';
+			helpdiv.style.left    = rect.left + "px";
 			helpdiv.style.display = option.help.checked ? "block" : "none";
 		},
 
@@ -47,18 +51,18 @@ var
 
 			timeout = setTimeout(update, 250);
 		},
-		
+
 		onSelect= function()
 		{
 			input.selectionStart = this.value;
-			input.selectionEnd   = parseInt(this.value) + parseInt(this.getAttribute("len"));
+			input.selectionEnd   = parseInt(this.value, 10) + parseInt(this.getAttribute("len"), 10);
 		},
 
 		onOpenGroup= function()
 		{
 			var ol = this.nextSibling.nextSibling;
-			
-			if (ol.style.display=='' || ol.style.display == 'none')
+
+			if (ol.style.display==='' || ol.style.display === 'none')
 			{
 				ol.style.display = 'block';
 				this.src = 'tree_open.gif';
@@ -74,11 +78,12 @@ var
 		/* METHODS */
 		getRegex= function()
 		{
-			var modifier = (option.multiline.checked ? 'm' : '') +
-				       (option.case_sensitive.checked ? '': 'i') +
-				       (option.global ? 'g': ''),
-					what = regex.value
-			;
+		var
+			modifier = (option.multiline.checked ? 'm' : '') +
+				(option.case_sensitive.checked ? '': 'i') +
+				(option.global ? 'g': ''),
+			what = regex.value
+		;
 
 			if (what)
 			{
@@ -110,11 +115,11 @@ var
 				count++;
 				option = '<li onclick="REGEX.onSelect.apply(this)" value="' + r.index + '" len="' + r[0].length + '">';
 				label  = r[0] + " @ " + r.index;
-				
+
 				if (r.length > 2)
 				{
 					label = '<img title="Click to see groups" onclick="return REGEX.onOpenGroup.apply(this);" src="tree_close.gif" />' + label;
-					
+
 					sm = '';
 					for (i = 1; i < r.length; i++)
 						sm += '<li>' + r[i] + '</li>';
@@ -132,7 +137,7 @@ var
 		changed= function()
 		{
 			return (regex.value !== regex.last_value) ||
-			       (input.value !== input.last_value);
+				(input.value !== input.last_value);
 		},
 
 		clearInfo= function()
@@ -142,7 +147,7 @@ var
 			count.innerHTML = 0;
 		},
 
-		search= function() 
+		search= function()
 		{
 			clearInfo();
 
@@ -153,15 +158,15 @@ var
 				if (s)
 				{
 					r = s.exec(input.value);
-					if (r)	
+					if (r)
 						generateInfo(r, s);
 				}
-			} 
+			}
 		},
 
 		changedReplace= function()
 		{
-		       return (replace.value !== replace.last_value);
+			return replace.value !== replace.last_value;
 		},
 
 		saveValues= function()
@@ -194,24 +199,32 @@ var
 
 		save= function()
 		{
-			var s   = document.createElement("DIV"), 
-			    img = document.createElement("A"), 
-			    sp = document.createElement("SPAN")
-			;
-
+		var
+			s   = document.createElement("DIV"),
+			img = document.createElement("A"),
+			sp = document.createElement("SPAN")
+		;
 			sp.innerHTML = regex.value;
-			
+
 			sp.title = sp.innerHTML;
 			sp.replace = replace.value;
 
-			sp.onclick = function() { regex.value = this.innerHTML; replace.value = this.replace; update(); }
-			img.onclick = function() { this.parentNode.parentNode.removeChild(this.parentNode); return false; }
+			sp.onclick = function() {
+				regex.value = this.innerHTML;
+				replace.value = this.replace;
+				update();
+			};
+
+			img.onclick = function() {
+				this.parentNode.parentNode.removeChild(this.parentNode);
+				return false;
+			};
 
 			img.innerHTML = "X";
 
 			s.appendChild(sp);
 			s.appendChild(img);
-			
+
 			saved.appendChild(s);
 		}
 		;
@@ -236,8 +249,8 @@ var
 		this.save = save;
 	};
 
-	window.onload = function() { 
-		window.REGEX = new REGEX(); 
+	window.onload = function() {
+		window.REGEX = new REGEX();
 	};
 
 })(this, document);

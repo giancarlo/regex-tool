@@ -1,19 +1,85 @@
-@charset "utf-8"
+@charset "utf-8";
 
-#footer { margin-top: 10px; text-align: center; }
+textarea, ul, button { border-radius: 8px; border: 1px solid #ccc; }
 
-textarea, div, ul, button { border-radius: 2px;  }
+header {
+	background-color: #2C3E50;
+	color: #eee; padding: 5px 10px;
+	height: 40px;
+}
 
-body { min-width: 800px; background-color: #eee; font-size: 12px; font-family: Verdana, Arial, sans-serif; }
-textarea {  width: 100%; margin-bottom: 6px; border: 1px solid #666; padding: 0; }
-label { height: 20px; line-height: 20px; padding: 0; margin: 0; font-weight: bold; }
+body {
+	margin: 0; padding: 0;
+	min-width: 760px; background-color: #ECF0F1;
+	font-size: 12px; font-family: Verdana, Arial, sans-serif;
+}
+label {
+	position: relative; 
+	padding: 0; 
+	font-weight: bold;
+}
+
+#content {
+	position: absolute;	top: 90px; left: 0; right: 0; bottom: 0;
+	min-width: 760px;
+}
+
+#content > div {
+	position: absolute;
+	padding: 0 5px 5px 5px;
+	left: 0; right: 0;
+	box-sizing: border-box;
+}
+
+#content > div:first-child { padding-top: 5px; }
+
+#content > div > label {
+	position: absolute; font-size: 20px; color: #ccc; left: 10px;
+	text-transform: lowercase;
+}
+
+#output {
+	background-color: rgba(46, 204, 113, 0.2) !important;
+	width: 100%; height: 100%;
+}
+#input { width: 100%; height: 100%; }
+
+#regex-container { height: 15%; }
+#regex { height: 100%; width: 100%;}
+
+#replace-container { top: 15%; height: 15%; }
+#replace { height: 100%; width: 100%; }
+
+#input-container { top: 30%; height: 35%; width: 70% !important; }
+#output-container { top: 65%; height: 35%; width: 70% !important; }
+#matches-container { top: 30%; left: 70% !important; bottom: 0; }
+
+#content > div > textarea {
+	padding-top: 24px; background-color: rgba(255, 255, 255, 0.5);
+	border: 1px solid #ccc; box-sizing: border-box;
+}
+
+#saved {
+	border: none; background-color: #1ABC9C; line-height: 30px;
+	box-sizing: border-box; height: 40px; padding: 5px;
+}
+
+#saved > button {
+	background-color: #2C3E50; color: #eee; height: 30px;
+}
+
+#output-bar {
+	position: absolute !important; bottom: 0; top: 30%;
+	padding: 10px; box-sizing: border-box;
+}
+
 table { max-width: 780px;  }
-tbody > tr:nth-child(odd) { background-color: #eee;  };
+tbody > tr:nth-child(odd) { background-color: #eee;  }
 td { margin: 2px 5px;padding: 0; border: 0;  }
 button { border: 1px solid #666; min-height: 20px; }
 
 #help { display: none; position: absolute; border: 1px solid #666; background-color: white; padding: 5px;}
-#saved { border: 1px solid #666;  background-color: #ccc; padding:4px;  }
+
 #saved div {
 	white-space: nowrap; 
 	margin: 0 4px;
@@ -30,29 +96,32 @@ button { border: 1px solid #666; min-height: 20px; }
 #saved > div > a { position: relative; right: 0; width: 20px; font-weight: bold; text-align: center;;display: inline-block; background-color: #666; color: white; }
 #saved > div > span { width: 130px; display: inline-block; overflow: hidden; }
 
-#found { border: 1px solid #666; height: 434px; margin: 0 0 10px 10px; padding: 0; overflow: auto; background-color: white; }
+#found {
+	border: 1px solid #ccc; padding: 24px 0 0 0; overflow: auto;
+	background-color: white; margin: 0; height: 100%;
+	box-sizing: border-box;
+}
 #found li { cursor: pointer; }
 #found > li { padding: 2px; list-style: none; line-height: 20px; }
 #found > li:hover { background-color: #ccc; }
 #found img { float: left;}
-#found > li  ol { background-color: white; display: none; }
+#found > li ol { background-color: white; display: none; }
 
+/*
 .error { margin-bottom: 4px; font-weight: bold; color: red; }
+*/
 
-#output { height: 200px; }
-#input { height: 200px; }
 
 h1 {
-	height: 40px;
-	margin-bottom: 0px;
+	line-height: 40px;
+	margin: 0px;
 	float: left;
 	padding-right: 20px;
 }
 
 #toolbar {
-	 height: 30px;
-	 padding: 10px 0 20px 0;
-	 left:  0px;
+	 line-height: 40px;
+	 left:  0;
 }
 
 #spinner { position: absolute; background-color: #ccc; }
