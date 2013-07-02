@@ -133,13 +133,6 @@ var
 			setInfo(count, options);
 		},
 
-		// TODO This is needed so the list doesnt get updated for no reason.
-		changed= function()
-		{
-			return (regex.value !== regex.last_value) ||
-				(input.value !== input.last_value);
-		},
-
 		clearInfo= function()
 		{
 			found.innerHTML = '';
@@ -184,11 +177,8 @@ var
 		{
 			clearTimeout(timeout);
 
-			if (changed())
-			{
-				saveValues();
-				search();
-			}
+			saveValues();
+			search();
 
 			if (replace.value && changedReplace())
 			{
