@@ -35,7 +35,7 @@ label {
 #content > div:first-child { padding-top: 5px; }
 
 #content > div > label {
-	position: absolute; font-size: 20px; color: #ccc; left: 10px;
+	position: absolute; font-size: 20px; color: #bbb; left: 10px;
 	text-transform: lowercase;
 }
 
